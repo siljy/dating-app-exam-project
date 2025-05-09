@@ -1,35 +1,52 @@
 import { userUrl } from "./config/auth.js";
+import { saveUserToLocalStorage } from "./login.js";
 import { getDataFromCrudCrud } from "./requests/get.js";
+import { editUser } from "./requests/put.js";
 
 const profileDiv = document.getElementById("user-profile");
 
-function getFromLocalStorage() {
-  let localUser = localStorage.getItem("User");
-  localUser = JSON.parse(localUser);
+function getFromLocalStorage(key) {
+  let localUser = JSON.parse(localStorage.getItem(key));
   return localUser;
 }
 
-function createUserProfile() {
-  const localUser = getFromLocalStorage();
+async function createUserProfile() {
+  const localUser = getFromLocalStorage("User");
 
-  const profileUsername = document.createElement("h2");
+  const title = document.createElement("h2");
+  title.innerHTML = "Your profile";
+  const profileUsername = document.createElement("h3");
   profileUsername.innerHTML = localUser.username;
 
   const profilePassword = document.createElement("p");
-  profilePassword.innerHTML = `Passord: ${localUser.password}`;
+  profilePassword.innerHTML = `Password: ${localUser.password}`;
 
-  const editUsername = document.createElement("button");
-  editUsername.innerHTML = "Edit username";
+  const editBtn = document.createElement("button");
+  editBtn.innerHTML = "Edit profile";
+  editBtn.addEventListener("click", () => {
+    updateUserProfile();
+  });
 
-  const editPassword = document.createElement("button");
-  editPassword.innerHTML = "Edit password";
+  profileDiv.append(title, profileUsername, profilePassword, editBtn);
+}
 
-  profileDiv.append(
-    profileUsername,
-    profilePassword,
-    editUsername,
-    editPassword
-  );
+async function updateUserProfile() {
+  const user = getFromLocalStorage("User");
+
+  const userId = user._id;
+  const newUsername = prompt("New username");
+  const newPassword = prompt("New password");
+
+  const updatedUser = {
+    username: newUsername,
+    password: newPassword,
+  };
+
+  await editUser(userUrl, userId, updatedUser);
+  const updatedCrudUser = { ...updatedUser, _id: user._id };
+  saveUserToLocalStorage("User", updatedCrudUser);
+  profileDiv.innerHTML = "";
+  createUserProfile();
 }
 
 createUserProfile();

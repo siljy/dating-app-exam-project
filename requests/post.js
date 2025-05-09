@@ -1,10 +1,10 @@
-import { userUrl } from "../config/auth.js";
-
-export async function postUser(user) {
+export async function postUser(url, user) {
   try {
-    const response = await axios.post(userUrl, user);
+    const response = await axios.post(url, user);
     console.log("New user added:", response.data);
+    return response.data;
   } catch (error) {
     console.log("Unable to add new user", error);
+    return null;
   }
 }
