@@ -15,6 +15,7 @@ registerForm.addEventListener("submit", async (event) => {
     const newUser = { username: username.value, password: password.value };
 
     postUser(newUser);
+    saveUserToLocalStorage("User", newUser);
 
     username.value = "";
     password.value = "";
@@ -50,17 +51,24 @@ async function compareUserDatabase(username, password) {
   const usernameFromCrud = userDatabase.find(
     (user) => user.username === username
   );
-  const passwordFromCrud = userDatabase.find(
-    (user) => user.password === password
-  );
-  if (usernameFromCrud == null) {
+
+  if (!usernameFromCrud) {
     alert("No user found, please create a new user");
-  } else if (passwordFromCrud == null) {
+  } else if (usernameFromCrud.password !== password) {
     alert("Wrong password, try again");
   } else {
+    const userFromCrud = {
+      username: username,
+      password: password,
+    };
+    saveUserToLocalStorage("User", userFromCrud);
+    alert("Successfully logged in, welcome!");
     setTimeout(() => {
       window.location.href = "datingapp.html";
     }, 3000);
-    alert("Successfully logged in, welcome!");
   }
+}
+
+function saveUserToLocalStorage(key, item) {
+  localStorage.setItem(key, JSON.stringify(item));
 }
