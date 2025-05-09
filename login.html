@@ -4,6 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Log in</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
-  <body></body>
+  <body>
+    <div>
+      <h1>Create a new user and find your matches!</h1>
+      <form id="register-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" />
+        <label for="password">Password</label>
+        <input type="text" id="password" />
+        <button type="submit">Create new user</button>
+      </form>
+    </div>
+
+    <div>
+      <p>Already a user?</p>
+      <button id="login-btn">Log in</button>
+    </div>
+
+    <script type="module" src="login.js"></script>
+  </body>
 </html>
