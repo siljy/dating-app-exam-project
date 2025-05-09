@@ -10,17 +10,23 @@
     <div>
       <h1>Create a new user and find your matches!</h1>
       <form id="register-form">
-        <label for="username">Username</label>
-        <input type="text" id="username" />
-        <label for="password">Password</label>
-        <input type="text" id="password" />
+        <label for="register-username">Username</label>
+        <input type="text" id="register-username" />
+        <label for="register-password">Password</label>
+        <input type="password" id="register-password" />
         <button type="submit">Create new user</button>
       </form>
     </div>
 
     <div>
-      <p>Already a user?</p>
-      <button id="login-btn">Log in</button>
+      <h2>Already a user?</h2>
+      <form id="login">
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username" />
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" />
+        <button type="submit">Log in</button>
+      </form>
     </div>
 
     <script type="module" src="login.js"></script>
