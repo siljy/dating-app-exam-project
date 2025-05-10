@@ -20,7 +20,7 @@ async function compareUserDatabase(username, password) {
       password: password,
     };
 
-    saveUserToLocalStorage("User", userFromCrud);
+    saveToLocalStorage("User", userFromCrud);
     alert("Successfully logged in, welcome!");
     setTimeout(() => {
       window.location.href = "datingapp.html";
@@ -28,7 +28,7 @@ async function compareUserDatabase(username, password) {
   }
 }
 
-export function saveUserToLocalStorage(key, item) {
+export function saveToLocalStorage(key, item) {
   localStorage.setItem(key, JSON.stringify(item));
 }
 
@@ -47,7 +47,7 @@ window.onload = () => {
 
       const createdUser = await postUser(userUrl, newUser);
       if (createdUser) {
-        saveUserToLocalStorage("User", createdUser);
+        saveToLocalStorage("User", createdUser);
       }
 
       username.value = "";
