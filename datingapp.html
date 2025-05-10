@@ -10,6 +10,31 @@
     <h1>Find your match</h1>
     <div id="user-profile"></div>
 
+    <h2>Select filters</h2>
+    <div id="filters">
+      <input type="radio" name="gender" id="both" value="both" />
+      <label for="men">Both</label>
+      <input type="radio" name="gender" id="female" value="female" />
+      <label for="women">Women</label>
+      <input type="radio" name="gender" id="male" value="male" />
+      <label for="men">Men</label>
+
+      <select id="age-range">
+        <option value="18-24">18-24</option>
+        <option value="25-34">25-34</option>
+        <option value="35-44">35-44</option>
+        <option value="45-54">45-54</option>
+        <option value="55-64">55-64</option>
+        <option value="65-plus">65+</option>
+      </select>
+
+      <button id="apply-filters">Apply filter(s)</button>
+      <!-- <button id="remove-filters">Remove filters</button> -->
+    </div>
+
+    <h2>Your potential match</h2>
+    <div id="random-person-display"></div>
+
     <script type="module" src="datingapp.js"></script>
     <script type="module" src="login.js"></script>
   </body>
