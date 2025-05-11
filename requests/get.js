@@ -25,7 +25,7 @@ export async function getRandomUser() {
 export async function getGender(gender) {
   try {
     const response = await axios.get(
-      `https://randomuser.me/api/?gender=${gender}&results=10`
+      `${randomUserUrl}/?gender=${gender}&results=10`
     );
     console.log("Fetched person by gender", response.data.results);
     return response.data.results;

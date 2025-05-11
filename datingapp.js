@@ -128,6 +128,9 @@ async function checkLocalStorage() {
       displayRandomPerson(person);
     }
   }
+
+  let favorites = getFromLocalStorage("Favorites");
+  displayFavorites(favorites);
 }
 
 const applyFilterBtn = document.getElementById("apply-filters");
@@ -149,7 +152,6 @@ async function getFilters() {
       age: selectedAgeRange,
       gender: selectedGender,
     };
-    console.log("Selected filters", filters.gender);
     saveToLocalStorage("Filters", filters);
     filterPeople(filters.gender);
   }
@@ -204,20 +206,29 @@ async function newPerson() {
 }
 
 let savedDiv = document.getElementById("favorites");
+//Extra feature
+let counter = 0;
 
 async function swipeYes(person) {
   await postPerson(favUrl, person);
   updateLocalFavorite();
   newPerson();
+
+  //Extra feature
+  counter++;
+  randomMatch(person);
 }
 
 async function updateLocalFavorite() {
   savedDiv.innerHTML = "";
   localStorage.removeItem("Favorites");
+
   let crudFavoritesArray = await getDataFromCrudCrud(favUrl);
   saveToLocalStorage("Favorites", crudFavoritesArray);
+
   let localFavoritesArray = getFromLocalStorage("Favorites");
   console.log("hei", localFavoritesArray);
+
   displayFavorites(localFavoritesArray);
 }
 
@@ -255,11 +266,48 @@ async function displayFavorites(favorites) {
   });
 }
 
-function checkForFavorites() {
-  let favorites = getFromLocalStorage("Favorites");
-  displayFavorites(favorites);
+//Extra feature: Randomly match with favorites
+function randomNumber(min, max) {
+  const minCeil = Math.ceil(min);
+  const maxFloor = Math.floor(max);
+  let randomNumber = Math.floor(Math.random() * (maxFloor - minCeil) + min);
+  return randomNumber;
+}
+
+let number = randomNumber(2, 7);
+
+function randomMatch(match) {
+  console.log("Number of clicks:", counter);
+  console.log("Random number", number);
+
+  if (counter == number) {
+    alert(`You've matched with ${match.name}!`);
+    counter = 0;
+    number = randomNumber(2, 7);
+    displayMatches(match);
+  }
+}
+
+let matchDiv = document.getElementById("matches");
+function displayMatches(match) {
+  const matchCard = document.createElement("div");
+  const displayName = document.createElement("h3");
+  displayName.innerHTML = match.name;
+
+  const displayImg = document.createElement("img");
+  displayImg.src = match.img;
+
+  const displayAge = document.createElement("h4");
+  displayAge.innerHTML = match.age;
+
+  const displayLocation = document.createElement("p");
+  displayLocation.innerHTML = match.location;
+
+  matchCard.append(displayName, displayImg, displayAge, displayLocation);
+  matchDiv.append(matchCard);
+
+  matchDiv.style.backgroundColor = "pink";
 }
 
 createUserProfile();
 checkLocalStorage();
-checkForFavorites();
