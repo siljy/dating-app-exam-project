@@ -1,5 +1,6 @@
 import { userUrl, favUrl } from "./config/auth.js";
 import { saveToLocalStorage } from "./login.js";
+import { deleteFromCrudCrud } from "./requests/delete.js";
 import {
   getDataFromCrudCrud,
   getGender,
@@ -95,13 +96,12 @@ async function displayRandomPerson(person) {
   const noBtn = document.createElement("button");
   noBtn.innerHTML = "Find new match";
   noBtn.addEventListener("click", () => {
-    swipeNo();
+    newPerson();
   });
 
   const yesBtn = document.createElement("button");
   yesBtn.innerHTML = "Like";
   yesBtn.addEventListener("click", () => {
-    console.log("Liked, saving to crud, local and displaying html");
     swipeYes(person);
   });
 
@@ -118,14 +118,12 @@ async function displayRandomPerson(person) {
 async function checkLocalStorage() {
   let localPerson = getFromLocalStorage("Random person");
   if (localPerson) {
-    //Display person from localStorage
     displayRandomPerson(localPerson);
   } else {
     const filters = getFromLocalStorage("Filters");
     if (filters) {
       filterPeople(filters.gender);
     } else {
-      //No filters and no person, create random
       const person = await createRandomObject();
       displayRandomPerson(person);
     }
@@ -195,7 +193,7 @@ function parseAgeRange(range) {
 }
 
 //Swipe functionality
-async function swipeNo() {
+async function newPerson() {
   const filters = getFromLocalStorage("Filters");
   if (filters) {
     filterPeople(filters.gender);
@@ -208,11 +206,18 @@ async function swipeNo() {
 let savedDiv = document.getElementById("favorites");
 
 async function swipeYes(person) {
-  const crudFavorite = await postPerson(favUrl, person);
+  await postPerson(favUrl, person);
+  updateLocalFavorite();
+  newPerson();
+}
 
+async function updateLocalFavorite() {
+  savedDiv.innerHTML = "";
+  localStorage.removeItem("Favorites");
   let crudFavoritesArray = await getDataFromCrudCrud(favUrl);
   saveToLocalStorage("Favorites", crudFavoritesArray);
   let localFavoritesArray = getFromLocalStorage("Favorites");
+  console.log("hei", localFavoritesArray);
   displayFavorites(localFavoritesArray);
 }
 
@@ -234,8 +239,9 @@ async function displayFavorites(favorites) {
 
     const deleteBtn = document.createElement("button");
     deleteBtn.innerHTML = "Delete";
-    deleteBtn.addEventListener("click", () => {
-      deleteFavorite();
+    deleteBtn.addEventListener("click", async () => {
+      await deleteFromCrudCrud(favUrl, favorite._id);
+      updateLocalFavorite();
     });
 
     favoriteCard.append(
@@ -252,10 +258,6 @@ async function displayFavorites(favorites) {
 function checkForFavorites() {
   let favorites = getFromLocalStorage("Favorites");
   displayFavorites(favorites);
-}
-
-async function deleteFavorite() {
-  console.log("slett");
 }
 
 createUserProfile();
