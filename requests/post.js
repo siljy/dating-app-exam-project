@@ -1,10 +1,10 @@
-export async function postUser(url, user) {
+export async function postPerson(url, user) {
   try {
     const response = await axios.post(url, user);
-    console.log("New user added:", response.data);
+    console.log("Posted to crud", response.data);
     return response.data;
   } catch (error) {
-    console.log("Unable to add new user", error);
+    console.log("Unable to post to crud", error);
     return null;
   }
 }
