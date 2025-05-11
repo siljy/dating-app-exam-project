@@ -1,6 +1,6 @@
 import { userUrl } from "./config/auth.js";
 import { getDataFromCrudCrud } from "./requests/get.js";
-import { postUser } from "./requests/post.js";
+import { postPerson } from "./requests/post.js";
 
 async function compareUserDatabase(username, password) {
   const userDatabase = await getDataFromCrudCrud(userUrl);
@@ -45,7 +45,7 @@ window.onload = () => {
     } else {
       const newUser = { username: username.value, password: password.value };
 
-      const createdUser = await postUser(userUrl, newUser);
+      const createdUser = await postPerson(userUrl, newUser);
       if (createdUser) {
         saveToLocalStorage("User", createdUser);
       }

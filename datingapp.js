@@ -1,6 +1,11 @@
-import { userUrl } from "./config/auth.js";
+import { userUrl, favUrl } from "./config/auth.js";
 import { saveToLocalStorage } from "./login.js";
-import { getGender, getRandomUser } from "./requests/get.js";
+import {
+  getDataFromCrudCrud,
+  getGender,
+  getRandomUser,
+} from "./requests/get.js";
+import { postPerson } from "./requests/post.js";
 import { editUser } from "./requests/put.js";
 
 function getFromLocalStorage(key) {
@@ -87,7 +92,27 @@ async function displayRandomPerson(person) {
   const displayLocation = document.createElement("p");
   displayLocation.innerHTML = person.location;
 
-  randomPersonDiv.append(displayName, displayImg, displayAge, displayLocation);
+  const noBtn = document.createElement("button");
+  noBtn.innerHTML = "Find new match";
+  noBtn.addEventListener("click", () => {
+    swipeNo();
+  });
+
+  const yesBtn = document.createElement("button");
+  yesBtn.innerHTML = "Like";
+  yesBtn.addEventListener("click", () => {
+    console.log("Liked, saving to crud, local and displaying html");
+    swipeYes(person);
+  });
+
+  randomPersonDiv.append(
+    displayName,
+    displayImg,
+    displayAge,
+    displayLocation,
+    noBtn,
+    yesBtn
+  );
 }
 
 async function checkLocalStorage() {
@@ -169,5 +194,70 @@ function parseAgeRange(range) {
   return { min, max };
 }
 
+//Swipe functionality
+async function swipeNo() {
+  const filters = getFromLocalStorage("Filters");
+  if (filters) {
+    filterPeople(filters.gender);
+  } else {
+    const person = await createRandomObject();
+    displayRandomPerson(person);
+  }
+}
+
+let savedDiv = document.getElementById("favorites");
+
+async function swipeYes(person) {
+  const crudFavorite = await postPerson(favUrl, person);
+
+  let crudFavoritesArray = await getDataFromCrudCrud(favUrl);
+  saveToLocalStorage("Favorites", crudFavoritesArray);
+  let localFavoritesArray = getFromLocalStorage("Favorites");
+  displayFavorites(localFavoritesArray);
+}
+
+async function displayFavorites(favorites) {
+  favorites.forEach((favorite) => {
+    const favoriteCard = document.createElement("div");
+
+    const displayName = document.createElement("h3");
+    displayName.innerHTML = favorite.name;
+
+    const displayImg = document.createElement("img");
+    displayImg.src = favorite.img;
+
+    const displayAge = document.createElement("h4");
+    displayAge.innerHTML = favorite.age;
+
+    const displayLocation = document.createElement("p");
+    displayLocation.innerHTML = favorite.location;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerHTML = "Delete";
+    deleteBtn.addEventListener("click", () => {
+      deleteFavorite();
+    });
+
+    favoriteCard.append(
+      displayName,
+      displayImg,
+      displayAge,
+      displayLocation,
+      deleteBtn
+    );
+    savedDiv.append(favoriteCard);
+  });
+}
+
+function checkForFavorites() {
+  let favorites = getFromLocalStorage("Favorites");
+  displayFavorites(favorites);
+}
+
+async function deleteFavorite() {
+  console.log("slett");
+}
+
 createUserProfile();
 checkLocalStorage();
+checkForFavorites();
