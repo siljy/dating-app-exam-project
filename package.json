@@ -1,0 +1,14 @@
+{
+  "name": "eksamen-siljeskogstrandmoe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "datingapp.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Silje Skogstrand Moe",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

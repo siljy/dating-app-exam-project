@@ -285,7 +285,6 @@ function randomNumber(min, max) {
 }
 
 let number = randomNumber(2, 7);
-let saveMatch = [];
 
 let matchDiv = document.getElementById("matches");
 
