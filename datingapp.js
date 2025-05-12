@@ -129,8 +129,19 @@ async function checkLocalStorage() {
     }
   }
 
-  let favorites = getFromLocalStorage("Favorites");
-  displayFavorites(favorites);
+  let localFavorites = getFromLocalStorage("Favorites");
+  if (!localFavorites) {
+    return;
+  } else {
+    displayFavorites(localFavorites);
+  }
+
+  let localMatches = getFromLocalStorage("Matches");
+  if (!localMatches) {
+    return;
+  } else {
+    displayMatches(localMatches);
+  }
 }
 
 const applyFilterBtn = document.getElementById("apply-filters");
@@ -227,31 +238,30 @@ async function updateLocalFavorite() {
   saveToLocalStorage("Favorites", crudFavoritesArray);
 
   let localFavoritesArray = getFromLocalStorage("Favorites");
-  console.log("hei", localFavoritesArray);
 
   displayFavorites(localFavoritesArray);
 }
 
-async function displayFavorites(favorites) {
-  favorites.forEach((favorite) => {
+async function displayFavorites(savedPeople) {
+  savedPeople.forEach((person) => {
     const favoriteCard = document.createElement("div");
 
     const displayName = document.createElement("h3");
-    displayName.innerHTML = favorite.name;
+    displayName.innerHTML = person.name;
 
     const displayImg = document.createElement("img");
-    displayImg.src = favorite.img;
+    displayImg.src = person.img;
 
     const displayAge = document.createElement("h4");
-    displayAge.innerHTML = favorite.age;
+    displayAge.innerHTML = person.age;
 
     const displayLocation = document.createElement("p");
-    displayLocation.innerHTML = favorite.location;
+    displayLocation.innerHTML = person.location;
 
     const deleteBtn = document.createElement("button");
     deleteBtn.innerHTML = "Delete";
     deleteBtn.addEventListener("click", async () => {
-      await deleteFromCrudCrud(favUrl, favorite._id);
+      await deleteFromCrudCrud(favUrl, person._id);
       updateLocalFavorite();
     });
 
@@ -275,6 +285,9 @@ function randomNumber(min, max) {
 }
 
 let number = randomNumber(2, 7);
+let saveMatch = [];
+
+let matchDiv = document.getElementById("matches");
 
 function randomMatch(match) {
   console.log("Number of clicks:", counter);
@@ -284,29 +297,45 @@ function randomMatch(match) {
     alert(`You've matched with ${match.name}!`);
     counter = 0;
     number = randomNumber(2, 7);
-    displayMatches(match);
+
+    let matches = getFromLocalStorage("Matches");
+    matches.push(match);
+    saveToLocalStorage("Matches", matches);
+
+    displayMatches();
   }
 }
 
-let matchDiv = document.getElementById("matches");
-function displayMatches(match) {
-  const matchCard = document.createElement("div");
-  const displayName = document.createElement("h3");
-  displayName.innerHTML = match.name;
+function displayMatches() {
+  matchDiv.innerHTML = "";
+  let matches = getFromLocalStorage("Matches");
+  matches.forEach((match) => {
+    const matchCard = document.createElement("div");
+    const displayName = document.createElement("h3");
+    displayName.innerHTML = match.name;
 
-  const displayImg = document.createElement("img");
-  displayImg.src = match.img;
+    const displayImg = document.createElement("img");
+    displayImg.src = match.img;
 
-  const displayAge = document.createElement("h4");
-  displayAge.innerHTML = match.age;
+    const displayAge = document.createElement("h4");
+    displayAge.innerHTML = match.age;
 
-  const displayLocation = document.createElement("p");
-  displayLocation.innerHTML = match.location;
+    const displayLocation = document.createElement("p");
+    displayLocation.innerHTML = match.location;
 
-  matchCard.append(displayName, displayImg, displayAge, displayLocation);
-  matchDiv.append(matchCard);
+    matchCard.append(displayName, displayImg, displayAge, displayLocation);
+    matchDiv.append(matchCard);
 
-  matchDiv.style.backgroundColor = "pink";
+    matchDiv.style.display = "flex";
+
+    matchCard.style.backgroundColor = "pink";
+    matchCard.style.display = "flex";
+    matchCard.style.flexDirection = "column";
+    matchCard.style.justifyContent = "center";
+    matchCard.style.width = "150px";
+    matchCard.style.margin = "20px";
+    matchCard.style.padding = "10px";
+  });
 }
 
 createUserProfile();
