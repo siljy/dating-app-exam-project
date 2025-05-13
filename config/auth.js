@@ -1,5 +1,5 @@
 export const url = "https://crudcrud.com/api";
-export const urlKey = "1c56928bdce146028809529aa38af52c";
+export const urlKey = "f571972626a144ccb06556b8d41a8b2a";
 
 export const userUrl = `${url}/${urlKey}/userdatabase`;
 export const favUrl = `${url}/${urlKey}/favorites`;
