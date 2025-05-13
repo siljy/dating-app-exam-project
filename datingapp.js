@@ -194,7 +194,7 @@ async function filterPeople(gender) {
   displayRandomPerson(matchedPerson);
 }
 
-function parseAgeRange(range) {
+export function parseAgeRange(range) {
   if (range === "65-plus") {
     return { min: 65, max: 122 };
   }
