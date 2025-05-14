@@ -62,7 +62,6 @@ let randomPersonDiv = document.getElementById("random-person-display");
 
 async function createRandomObject() {
   const randomPerson = await getRandomUser();
-  console.log("hei", randomPerson);
   let randomName = `${randomPerson[0].name.first} ${randomPerson[0].name.last}`;
   let randomImg = randomPerson[0].picture.large;
   let randomLocation = `${randomPerson[0].location.city}, ${randomPerson[0].location.country}`;
@@ -202,6 +201,13 @@ export function parseAgeRange(range) {
   const [min, max] = range.split("-").map(Number);
   return { min, max };
 }
+
+const removeFilterBtn = document.getElementById("remove-filters");
+removeFilterBtn.addEventListener("click", async () => {
+  localStorage.removeItem("Filters");
+  const person = await createRandomObject();
+  displayRandomPerson(person);
+});
 
 //Swipe functionality
 async function newPerson() {
