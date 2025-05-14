@@ -60,8 +60,8 @@ async function updateUserProfile() {
 //Finding a match
 let randomPersonDiv = document.getElementById("random-person-display");
 
-async function createRandomObject() {
-  const randomPerson = await getRandomUser();
+export async function createRandomObject() {
+  let randomPerson = await getRandomUser();
   let randomName = `${randomPerson[0].name.first} ${randomPerson[0].name.last}`;
   let randomImg = randomPerson[0].picture.large;
   let randomLocation = `${randomPerson[0].location.city}, ${randomPerson[0].location.country}`;
@@ -79,8 +79,8 @@ async function createRandomObject() {
   return person;
 }
 
-async function displayRandomPerson(person) {
-  randomPersonDiv.innerHTML = "";
+export async function displayRandomPerson(person, container) {
+  container.innerHTML = "";
   const displayName = document.createElement("h3");
   displayName.innerHTML = person.name;
 
@@ -105,7 +105,7 @@ async function displayRandomPerson(person) {
     swipeYes(person);
   });
 
-  randomPersonDiv.append(
+  container.append(
     displayName,
     displayImg,
     displayAge,
@@ -118,14 +118,14 @@ async function displayRandomPerson(person) {
 async function checkLocalStorage() {
   let localPerson = getFromLocalStorage("Random person");
   if (localPerson) {
-    displayRandomPerson(localPerson);
+    displayRandomPerson(localPerson, randomPersonDiv);
   } else {
     const filters = getFromLocalStorage("Filters");
     if (filters) {
-      filterPeople(filters.gender);
+      filterPeople(filters.gender, filters.age);
     } else {
       const person = await createRandomObject();
-      displayRandomPerson(person);
+      displayRandomPerson(person, randomPersonDiv);
     }
   }
 
@@ -162,13 +162,12 @@ function getFilters() {
       gender: selectedGender,
     };
     saveToLocalStorage("Filters", filters);
-    filterPeople(filters.gender);
+    filterPeople(filters.gender, filters.age);
   }
 }
 
-async function filterPeople(gender) {
-  const filters = getFromLocalStorage("Filters");
-  const { min, max } = parseAgeRange(filters.age);
+export async function filterPeople(gender, age) {
+  const { min, max } = parseAgeRange(age);
 
   let matchedPerson = null;
 
@@ -191,7 +190,8 @@ async function filterPeople(gender) {
     });
   }
 
-  displayRandomPerson(matchedPerson);
+  displayRandomPerson(matchedPerson, randomPersonDiv);
+  return matchedPerson;
 }
 
 export function parseAgeRange(range) {
@@ -207,15 +207,16 @@ export function parseAgeRange(range) {
 async function newPerson() {
   const filters = getFromLocalStorage("Filters");
   if (filters) {
-    filterPeople(filters.gender);
+    filterPeople(filters.gender, filters.age);
   } else {
     const person = await createRandomObject();
-    displayRandomPerson(person);
+    displayRandomPerson(person, randomPersonDiv);
   }
 }
 
 let savedDiv = document.getElementById("favorites");
-//Extra feature
+
+//Part of Extra feature
 let counter = 0;
 
 async function swipeYes(person) {
@@ -223,7 +224,7 @@ async function swipeYes(person) {
   updateLocalFavorite();
   newPerson();
 
-  //Extra feature
+  //Part of Extra feature
   counter++;
   randomMatch(person);
 }
@@ -275,7 +276,7 @@ async function displayFavorites(savedPeople) {
 }
 
 //Extra feature: Randomly match with favorites
-function randomNumber(min, max) {
+export function randomNumber(min, max) {
   const minCeil = Math.ceil(min);
   const maxFloor = Math.floor(max);
   let randomNumber = Math.floor(Math.random() * (maxFloor - minCeil) + min);
@@ -348,7 +349,7 @@ window.onload = () => {
   removeFilterBtn.addEventListener("click", async () => {
     localStorage.removeItem("Filters");
     const person = await createRandomObject();
-    displayRandomPerson(person);
+    displayRandomPerson(person, randomPersonDiv);
   });
 
   checkLocalStorage();
