@@ -32,6 +32,31 @@ export function saveToLocalStorage(key, item) {
   localStorage.setItem(key, JSON.stringify(item));
 }
 
+export async function createNewUser() {
+  const username = document.getElementById("register-username");
+  const password = document.getElementById("register-password");
+
+  if (!username.value || !password.value) {
+    alert("Enter username and password");
+  } else {
+    const newUser = { username: username.value, password: password.value };
+
+    const createdUser = await postPerson(userUrl, newUser);
+    if (createdUser) {
+      saveToLocalStorage("User", createdUser);
+    }
+
+    username.value = "";
+    password.value = "";
+
+    alert("Successfully created a new user, welcome!");
+
+    setTimeout(() => {
+      window.location.href = "datingapp.html";
+    }, 3000);
+  }
+}
+
 export async function loginToPage() {
   const username = document.getElementById("login-username");
   const password = document.getElementById("login-password");
@@ -50,28 +75,7 @@ window.onload = () => {
 
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const username = document.getElementById("register-username");
-    const password = document.getElementById("register-password");
-
-    if (!username.value || !password.value) {
-      alert("Enter username and password");
-    } else {
-      const newUser = { username: username.value, password: password.value };
-
-      const createdUser = await postPerson(userUrl, newUser);
-      if (createdUser) {
-        saveToLocalStorage("User", createdUser);
-      }
-
-      username.value = "";
-      password.value = "";
-
-      alert("Successfully created a new user, welcome!");
-
-      setTimeout(() => {
-        window.location.href = "datingapp.html";
-      }, 3000);
-    }
+    createNewUser();
   });
   const loginForm = document.getElementById("login");
 

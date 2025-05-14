@@ -9,7 +9,7 @@ import {
 import { postPerson } from "./requests/post.js";
 import { editUser } from "./requests/put.js";
 
-function getFromLocalStorage(key) {
+export function getFromLocalStorage(key) {
   let localData = JSON.parse(localStorage.getItem(key));
   return localData;
 }
@@ -145,6 +145,7 @@ async function checkLocalStorage() {
 }
 
 const applyFilterBtn = document.getElementById("apply-filters");
+const removeFilterBtn = document.getElementById("remove-filters");
 
 function getFilters() {
   let selectedAgeRange = document.getElementById("age-range").value;
@@ -153,7 +154,7 @@ function getFilters() {
   );
 
   if (!selectedGenderRadio) {
-    alert("Select women, men or both");
+    alert("Select a gender to apply filters");
   } else {
     let selectedGender = selectedGenderRadio.value;
     let filters = {
@@ -201,13 +202,6 @@ export function parseAgeRange(range) {
   const [min, max] = range.split("-").map(Number);
   return { min, max };
 }
-
-const removeFilterBtn = document.getElementById("remove-filters");
-removeFilterBtn.addEventListener("click", async () => {
-  localStorage.removeItem("Filters");
-  const person = await createRandomObject();
-  displayRandomPerson(person);
-});
 
 //Swipe functionality
 async function newPerson() {
@@ -349,6 +343,12 @@ window.onload = () => {
 
   applyFilterBtn.addEventListener("click", () => {
     getFilters();
+  });
+
+  removeFilterBtn.addEventListener("click", async () => {
+    localStorage.removeItem("Filters");
+    const person = await createRandomObject();
+    displayRandomPerson(person);
   });
 
   checkLocalStorage();
