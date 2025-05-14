@@ -16,17 +16,17 @@ function getFromLocalStorage(key) {
 
 //User profile
 const profileDiv = document.getElementById("user-profile");
+const localUser = getFromLocalStorage("User");
 
-async function createUserProfile() {
-  const localUser = getFromLocalStorage("User");
-
+export function createUserProfile(user, container) {
   const title = document.createElement("h2");
   title.innerHTML = "Your profile";
+
   const profileUsername = document.createElement("h3");
-  profileUsername.innerHTML = localUser.username;
+  profileUsername.innerHTML = user.username;
 
   const profilePassword = document.createElement("p");
-  profilePassword.innerHTML = `Password: ${localUser.password}`;
+  profilePassword.innerHTML = `Password: ${user.password}`;
 
   const editBtn = document.createElement("button");
   editBtn.innerHTML = "Edit profile";
@@ -34,7 +34,8 @@ async function createUserProfile() {
     updateUserProfile();
   });
 
-  profileDiv.append(title, profileUsername, profilePassword, editBtn);
+  container.innerHTML = "";
+  container.append(title, profileUsername, profilePassword, editBtn);
 }
 
 async function updateUserProfile() {
@@ -53,7 +54,7 @@ async function updateUserProfile() {
   const updatedCrudUser = { ...updatedUser, _id: user._id };
   saveToLocalStorage("User", updatedCrudUser);
   profileDiv.innerHTML = "";
-  createUserProfile();
+  createUserProfile(updatedUser, profileDiv);
 }
 
 //Finding a match
@@ -61,7 +62,7 @@ let randomPersonDiv = document.getElementById("random-person-display");
 
 async function createRandomObject() {
   const randomPerson = await getRandomUser();
-
+  console.log("hei", randomPerson);
   let randomName = `${randomPerson[0].name.first} ${randomPerson[0].name.last}`;
   let randomImg = randomPerson[0].picture.large;
   let randomLocation = `${randomPerson[0].location.city}, ${randomPerson[0].location.country}`;
@@ -145,11 +146,8 @@ async function checkLocalStorage() {
 }
 
 const applyFilterBtn = document.getElementById("apply-filters");
-applyFilterBtn.addEventListener("click", () => {
-  getFilters();
-});
 
-async function getFilters() {
+function getFilters() {
   let selectedAgeRange = document.getElementById("age-range").value;
   let selectedGenderRadio = document.querySelector(
     'input[name="gender"]:checked'
@@ -196,7 +194,7 @@ async function filterPeople(gender) {
   displayRandomPerson(matchedPerson);
 }
 
-function parseAgeRange(range) {
+export function parseAgeRange(range) {
   if (range === "65-plus") {
     return { min: 65, max: 122 };
   }
@@ -285,7 +283,6 @@ function randomNumber(min, max) {
 }
 
 let number = randomNumber(2, 7);
-let saveMatch = [];
 
 let matchDiv = document.getElementById("matches");
 
@@ -298,8 +295,11 @@ function randomMatch(match) {
     counter = 0;
     number = randomNumber(2, 7);
 
-    let matches = getFromLocalStorage("Matches");
+    let matches = getFromLocalStorage("Matches") || [];
+
     matches.push(match);
+
+    console.log("matches", matches);
     saveToLocalStorage("Matches", matches);
 
     displayMatches();
@@ -338,5 +338,12 @@ function displayMatches() {
   });
 }
 
-createUserProfile();
-checkLocalStorage();
+window.onload = () => {
+  createUserProfile(localUser, profileDiv);
+
+  applyFilterBtn.addEventListener("click", () => {
+    getFilters();
+  });
+
+  checkLocalStorage();
+};

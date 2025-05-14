@@ -32,6 +32,19 @@ export function saveToLocalStorage(key, item) {
   localStorage.setItem(key, JSON.stringify(item));
 }
 
+export async function loginToPage() {
+  const username = document.getElementById("login-username");
+  const password = document.getElementById("login-password");
+
+  if (!username.value || !password.value) {
+    alert("Enter username and password");
+  } else {
+    compareUserDatabase(username.value, password.value);
+    username.value = "";
+    password.value = "";
+  }
+}
+
 window.onload = () => {
   const registerForm = document.getElementById("register-form");
 
@@ -65,15 +78,6 @@ window.onload = () => {
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const username = document.getElementById("login-username");
-    const password = document.getElementById("login-password");
-
-    if (!username.value || !password.value) {
-      alert("Enter username and password");
-    } else {
-      compareUserDatabase(username.value, password.value);
-      username.value = "";
-      password.value = "";
-    }
+    loginToPage();
   });
 };
