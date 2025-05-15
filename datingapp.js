@@ -132,7 +132,7 @@ async function checkLocalStorage() {
       filterPeople(filters.gender, filters.age);
     } else {
       const person = await createRandomObject();
-      displayRandomPerson(person);
+      displayRandomPerson(person, randomPersonDiv);
     }
   }
 

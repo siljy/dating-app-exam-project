@@ -3,8 +3,8 @@ export async function editUser(url, id, updatedData) {
     const response = await axios.put(`${url}/${id}`, updatedData, {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Updated user information", response.data);
+    console.log("Updated user information", response);
   } catch (error) {
-    console.log("Failed updating user", error.response.data);
+    console.log("Failed updating user", error);
   }
 }
