@@ -44,24 +44,46 @@ test("createCard uses object to create HTML", () => {
 describe("Testing displaying random person in DOM", () => {
   let randomPersonDiv;
 
+  const randomPerson = {
+    name: "Donald Duck",
+    img: "donald.jpg",
+    location: "Duckville",
+    age: "40",
+    gender: "male",
+  };
+
   beforeEach(() => {
     document.body.innerHTML = `<div id="random-person-display"> </div>`;
     randomPersonDiv = document.getElementById("random-person-display");
   });
 
   test("displayRandomPerson updates innerHTML", async () => {
-    const randomPerson = {
-      name: "Donald Duck",
-      img: "img.jpg",
-      location: "Duckville",
-      age: 40,
-      gender: "male",
-    };
-
     await displayRandomPerson(randomPerson, randomPersonDiv);
 
     expect(randomPersonDiv.innerHTML).toBe(
       `<div><h3>${randomPerson.name}</h3><img src="${randomPerson.img}"><h4>${randomPerson.age}</h4><p>${randomPerson.location}</p><button>Find new match</button><button>Like</button></div>`
+    );
+  });
+
+  test("displayRandomPerson only displays one person at a time if called more than once", async () => {
+    await displayRandomPerson(randomPerson, randomPersonDiv);
+    await displayRandomPerson(randomPerson, randomPersonDiv);
+    await displayRandomPerson(randomPerson, randomPersonDiv);
+
+    expect(randomPersonDiv.querySelectorAll("h3").length).toBe(1);
+  });
+
+  test("displayRandomPerson clears previous person for new person", async () => {
+    randomPersonDiv.innerHTML = `<h3>Old name</h3><img src="old-img.jpg"><h4>Old age</h4>`;
+
+    await displayRandomPerson(randomPerson, randomPersonDiv);
+
+    expect(randomPersonDiv.innerHTML).not.toContain(
+      `<h3>Old name</h3><img src="old-img.jpg"><h4>Old age</h4>`
+    );
+
+    expect(randomPersonDiv.innerHTML).toContain(
+      `<h3>${randomPerson.name}</h3><img src="${randomPerson.img}"><h4>${randomPerson.age}</h4>`
     );
   });
 });
@@ -91,7 +113,7 @@ test("getFromLocalStorage fetches data object stored in localStorage", () => {
 
   localStorage.setItem("Data", JSON.stringify(savedData));
 
-  const fetchedData = getFromLocalStorage("Data", savedData);
+  const fetchedData = getFromLocalStorage("Data");
 
   expect(fetchedData).toEqual(savedData);
 });
