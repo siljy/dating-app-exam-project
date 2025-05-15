@@ -9,7 +9,7 @@ import {
 import { postPerson } from "./requests/post.js";
 import { editUser } from "./requests/put.js";
 
-function getFromLocalStorage(key) {
+export function getFromLocalStorage(key) {
   let localData = JSON.parse(localStorage.getItem(key));
   return localData;
 }
@@ -58,10 +58,8 @@ async function updateUserProfile() {
 }
 
 //Finding a match
-let randomPersonDiv = document.getElementById("random-person-display");
-
-async function createRandomObject() {
-  const randomPerson = await getRandomUser();
+export async function createRandomObject() {
+  let randomPerson = await getRandomUser();
   let randomName = `${randomPerson[0].name.first} ${randomPerson[0].name.last}`;
   let randomImg = randomPerson[0].picture.large;
   let randomLocation = `${randomPerson[0].location.city}, ${randomPerson[0].location.country}`;
@@ -79,8 +77,9 @@ async function createRandomObject() {
   return person;
 }
 
-async function displayRandomPerson(person) {
-  randomPersonDiv.innerHTML = "";
+export function createCard(person) {
+  const card = document.createElement("div");
+
   const displayName = document.createElement("h3");
   displayName.innerHTML = person.name;
 
@@ -92,6 +91,16 @@ async function displayRandomPerson(person) {
 
   const displayLocation = document.createElement("p");
   displayLocation.innerHTML = person.location;
+
+  card.append(displayName, displayImg, displayAge, displayLocation);
+  return card;
+}
+
+let randomPersonDiv = document.getElementById("random-person-display");
+
+export async function displayRandomPerson(person, container) {
+  container.innerHTML = "";
+  const card = createCard(person);
 
   const noBtn = document.createElement("button");
   noBtn.innerHTML = "Find new match";
@@ -105,24 +114,18 @@ async function displayRandomPerson(person) {
     swipeYes(person);
   });
 
-  randomPersonDiv.append(
-    displayName,
-    displayImg,
-    displayAge,
-    displayLocation,
-    noBtn,
-    yesBtn
-  );
+  card.append(noBtn, yesBtn);
+  container.append(card);
 }
 
 async function checkLocalStorage() {
   let localPerson = getFromLocalStorage("Random person");
   if (localPerson) {
-    displayRandomPerson(localPerson);
+    displayRandomPerson(localPerson, randomPersonDiv);
   } else {
     const filters = getFromLocalStorage("Filters");
     if (filters) {
-      filterPeople(filters.gender);
+      filterPeople(filters.gender, filters.age);
     } else {
       const person = await createRandomObject();
       displayRandomPerson(person);
@@ -145,6 +148,7 @@ async function checkLocalStorage() {
 }
 
 const applyFilterBtn = document.getElementById("apply-filters");
+const removeFilterBtn = document.getElementById("remove-filters");
 
 function getFilters() {
   let selectedAgeRange = document.getElementById("age-range").value;
@@ -153,7 +157,7 @@ function getFilters() {
   );
 
   if (!selectedGenderRadio) {
-    alert("Select women, men or both");
+    alert("Select a gender to apply filters");
   } else {
     let selectedGender = selectedGenderRadio.value;
     let filters = {
@@ -161,13 +165,12 @@ function getFilters() {
       gender: selectedGender,
     };
     saveToLocalStorage("Filters", filters);
-    filterPeople(filters.gender);
+    filterPeople(filters.gender, filters.age);
   }
 }
 
-async function filterPeople(gender) {
-  const filters = getFromLocalStorage("Filters");
-  const { min, max } = parseAgeRange(filters.age);
+export async function filterPeople(gender, age) {
+  const { min, max } = parseAgeRange(age);
 
   let matchedPerson = null;
 
@@ -190,7 +193,8 @@ async function filterPeople(gender) {
     });
   }
 
-  displayRandomPerson(matchedPerson);
+  displayRandomPerson(matchedPerson, randomPersonDiv);
+  return matchedPerson;
 }
 
 export function parseAgeRange(range) {
@@ -202,26 +206,20 @@ export function parseAgeRange(range) {
   return { min, max };
 }
 
-const removeFilterBtn = document.getElementById("remove-filters");
-removeFilterBtn.addEventListener("click", async () => {
-  localStorage.removeItem("Filters");
-  const person = await createRandomObject();
-  displayRandomPerson(person);
-});
-
 //Swipe functionality
 async function newPerson() {
   const filters = getFromLocalStorage("Filters");
   if (filters) {
-    filterPeople(filters.gender);
+    filterPeople(filters.gender, filters.age);
   } else {
     const person = await createRandomObject();
-    displayRandomPerson(person);
+    displayRandomPerson(person, randomPersonDiv);
   }
 }
 
 let savedDiv = document.getElementById("favorites");
-//Extra feature
+
+//Part of Extra feature
 let counter = 0;
 
 async function swipeYes(person) {
@@ -229,7 +227,7 @@ async function swipeYes(person) {
   updateLocalFavorite();
   newPerson();
 
-  //Extra feature
+  //Part of Extra feature
   counter++;
   randomMatch(person);
 }
@@ -247,20 +245,9 @@ async function updateLocalFavorite() {
 }
 
 async function displayFavorites(savedPeople) {
+  savedDiv.innerHTML = "";
   savedPeople.forEach((person) => {
-    const favoriteCard = document.createElement("div");
-
-    const displayName = document.createElement("h3");
-    displayName.innerHTML = person.name;
-
-    const displayImg = document.createElement("img");
-    displayImg.src = person.img;
-
-    const displayAge = document.createElement("h4");
-    displayAge.innerHTML = person.age;
-
-    const displayLocation = document.createElement("p");
-    displayLocation.innerHTML = person.location;
+    const card = createCard(person);
 
     const deleteBtn = document.createElement("button");
     deleteBtn.innerHTML = "Delete";
@@ -269,19 +256,13 @@ async function displayFavorites(savedPeople) {
       updateLocalFavorite();
     });
 
-    favoriteCard.append(
-      displayName,
-      displayImg,
-      displayAge,
-      displayLocation,
-      deleteBtn
-    );
-    savedDiv.append(favoriteCard);
+    card.append(deleteBtn);
+    savedDiv.append(card);
   });
 }
 
 //Extra feature: Randomly match with favorites
-function randomNumber(min, max) {
+export function randomNumber(min, max) {
   const minCeil = Math.ceil(min);
   const maxFloor = Math.floor(max);
   let randomNumber = Math.floor(Math.random() * (maxFloor - minCeil) + min);
@@ -305,7 +286,6 @@ function randomMatch(match) {
 
     matches.push(match);
 
-    console.log("matches", matches);
     saveToLocalStorage("Matches", matches);
 
     displayMatches();
@@ -316,32 +296,19 @@ function displayMatches() {
   matchDiv.innerHTML = "";
   let matches = getFromLocalStorage("Matches");
   matches.forEach((match) => {
-    const matchCard = document.createElement("div");
-    const displayName = document.createElement("h3");
-    displayName.innerHTML = match.name;
+    const card = createCard(match);
 
-    const displayImg = document.createElement("img");
-    displayImg.src = match.img;
+    matchDiv.append(card);
 
-    const displayAge = document.createElement("h4");
-    displayAge.innerHTML = match.age;
-
-    const displayLocation = document.createElement("p");
-    displayLocation.innerHTML = match.location;
-
-    matchCard.append(displayName, displayImg, displayAge, displayLocation);
-    matchDiv.append(matchCard);
-
-    matchDiv.style.display = "flex";
-
-    matchCard.style.backgroundColor = "pink";
-    matchCard.style.display = "flex";
-    matchCard.style.flexDirection = "column";
-    matchCard.style.justifyContent = "center";
-    matchCard.style.width = "150px";
-    matchCard.style.margin = "20px";
-    matchCard.style.padding = "10px";
+    card.style.backgroundColor = "pink";
+    card.style.display = "flex";
+    card.style.flexDirection = "column";
+    card.style.justifyContent = "center";
+    card.style.width = "150px";
+    card.style.margin = "20px";
+    card.style.padding = "10px";
   });
+  matchDiv.style.display = "flex";
 }
 
 window.onload = () => {
@@ -349,6 +316,12 @@ window.onload = () => {
 
   applyFilterBtn.addEventListener("click", () => {
     getFilters();
+  });
+
+  removeFilterBtn.addEventListener("click", async () => {
+    localStorage.removeItem("Filters");
+    const person = await createRandomObject();
+    displayRandomPerson(person, randomPersonDiv);
   });
 
   checkLocalStorage();
