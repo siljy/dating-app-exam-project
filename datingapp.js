@@ -161,7 +161,7 @@ function getFilters() {
   );
 
   if (!selectedGenderRadio) {
-    alert("Select a gender to apply filters");
+    alert("Select men, women or both to apply filters");
   } else {
     let selectedGender = selectedGenderRadio.value;
     let filters = {
