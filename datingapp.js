@@ -42,19 +42,23 @@ async function updateUserProfile() {
   const user = getFromLocalStorage("User");
 
   const userId = user._id;
-  const newUsername = prompt("New username");
-  const newPassword = prompt("New password");
+  const newUsername = prompt("New username", user.username);
+  const newPassword = prompt("New password", user.password);
 
-  const updatedUser = {
-    username: newUsername,
-    password: newPassword,
-  };
+  if (!newUsername || !newPassword) {
+    alert("Field cannot be empty, user profile not updated");
+  } else {
+    const updatedUser = {
+      username: newUsername,
+      password: newPassword,
+    };
 
-  await editUser(userUrl, userId, updatedUser);
-  const updatedCrudUser = { ...updatedUser, _id: user._id };
-  saveToLocalStorage("User", updatedCrudUser);
-  profileDiv.innerHTML = "";
-  createUserProfile(updatedUser, profileDiv);
+    await editUser(userUrl, userId, updatedUser);
+    const updatedCrudUser = { ...updatedUser, _id: user._id };
+    saveToLocalStorage("User", updatedCrudUser);
+    profileDiv.innerHTML = "";
+    createUserProfile(updatedUser, profileDiv);
+  }
 }
 
 //Finding a match
