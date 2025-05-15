@@ -262,7 +262,12 @@ async function displayFavorites(savedPeople) {
 
     card.append(deleteBtn);
     savedDiv.append(card);
+
+    card.style.width = "150px";
+    card.style.margin = "20px";
+    card.style.padding = "10px";
   });
+  savedDiv.style.display = "flex";
 }
 
 //Extra feature: Randomly match with favorites
