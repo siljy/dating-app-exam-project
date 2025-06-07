@@ -23,9 +23,8 @@ async function compareUserDatabase(username, password) {
     saveToLocalStorage("User", userFromCrud);
     alert("Successfully logged in, welcome!");
     setTimeout(() => {
-      //Go to new window: https://stackoverflow.com/questions/63148239/how-to-open-a-new-html-page-and-also-a-link-at-one-button-click
       window.location.href = "datingapp.html";
-    }, 3000);
+    }, 1000);
   }
 }
 

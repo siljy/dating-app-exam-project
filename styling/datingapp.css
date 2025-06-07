@@ -1,0 +1,54 @@
+#user-profile {
+  border: 2px solid #fcb2e0;
+  border-radius: 15px;
+  padding: 15px;
+  max-width: fit-content;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+#filters {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #fff;
+  max-width: fit-content;
+  border: 2px solid #fcb2e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+#filters input[type="radio"],
+#filters label,
+#filters select {
+  margin-right: 5px;
+  margin-bottom: 10px;
+}
+
+#random-person-display > div {
+  background-color: #fff;
+  border: 2px solid #fcb2e0;
+  border-radius: 15px;
+  padding: 20px;
+  max-width: 400px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+#favorites,
+#matches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+#favorites > div,
+#matches > div {
+  background-color: #fff;
+  border: 2px solid #fcb2e0;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 200px;
+  text-align: center;
+}

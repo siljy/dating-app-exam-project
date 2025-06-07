@@ -156,7 +156,6 @@ const removeFilterBtn = document.getElementById("remove-filters");
 
 function getFilters() {
   let selectedAgeRange = document.getElementById("age-range").value;
-  //Get radio button values: https://stackoverflow.com/questions/15839169/how-to-get-the-value-of-a-selected-radio-button
   let selectedGenderRadio = document.querySelector(
     'input[name="gender"]:checked'
   );
@@ -310,7 +309,7 @@ function displayMatches() {
 
     matchDiv.append(card);
 
-    card.style.backgroundColor = "pink";
+    card.style.backgroundColor = "#f987cd";
     card.style.display = "flex";
     card.style.flexDirection = "column";
     card.style.justifyContent = "center";
