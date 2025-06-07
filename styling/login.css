@@ -1,0 +1,34 @@
+#register-form,
+#login {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 5px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-width: 400px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+input {
+  border-radius: 2px;
+  padding: 10px;
+  max-width: 400px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+}
+
+label {
+  padding: 15px 0px 5px;
+  text-align: left;
+}
+
+div {
+  margin: 10px;
+}
+
+input:focus {
+  border: 3px solid #fcb2e0;
+  outline: none;
+}
