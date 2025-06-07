@@ -1,12 +1,12 @@
-#Exam project in JavaScript and API
+# Exam project in JavaScript and API
 
-##Features:
+## Features:
 
 - Logging and signing in
 - Swiping and saving potential matches
 - Randomly match with a user
 
-##Technical:
+## Technical:
 
 - Suitable for desktop
 - Vanilla JS, HTML and CSS
@@ -16,7 +16,7 @@
 - Unit testing with Jest
 - localStorage
 
-##How to use:
+## How to use:
 
 1. Get key from https://crudcrud.com/ and update urlKey in auth.js
 2. Open project i browser
