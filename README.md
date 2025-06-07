@@ -19,7 +19,7 @@
 ## How to use:
 
 1. Get key from https://crudcrud.com/ and update urlKey in auth.js
-2. Open project i browser
+2. Open project in browser
 3. Create new user
 4. Swipe, like and match! (random matches are generated after X number of 'Like' clicks)
 5. Run tests: “npm install” -> “npm test”
